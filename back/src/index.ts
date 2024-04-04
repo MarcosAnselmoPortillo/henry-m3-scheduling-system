@@ -1,3 +1,6 @@
-const a: number = 5;
+import server from './server';
+import {PORT} from './config/envs';
 
-console.log(a);
+server.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
