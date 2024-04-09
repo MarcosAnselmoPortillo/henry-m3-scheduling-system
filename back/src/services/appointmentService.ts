@@ -1,47 +1,37 @@
-import { IAppointmentDto } from "../dtos/IAppointmentDto";
-import { IAppointment } from "../interfaces/IAppointment";
+import { AppDataSource } from "../config/appDataSource";
+import { AppointmentDto } from "../dtos/AppointmentDto";
+import { Appointment } from "../entities/Appointment";
 
-let appointmentData: IAppointment[] = [];
-let appointmentIdCounter: number = 1;
-
-export const getAllAppointmentsService = async (): Promise<IAppointment[]> => {
-  const allAppointments: IAppointment[] = appointmentData;
+export const getAllAppointmentsService = async (): Promise<Appointment[]> => {
+  const allAppointments: Appointment[]  = await AppDataSource.getRepository(Appointment).find();
   return allAppointments;
 };
 
 export const getAppointmentByIdService = async (
   id: number
-): Promise<IAppointment> => {
-  const appointment = appointmentData.find(
-    (appointment) => appointment.id === id
-  );
+): Promise<Appointment> => {
+  const appointment = await AppDataSource.getRepository(Appointment).findOne({ where: {id} });
   if (!appointment) throw new Error("No appointment found with provided ID");
   else return appointment;
 };
 
 export const createAppointmentService = async (
-  appointmentDto: IAppointmentDto
-): Promise<IAppointment> => {
-  const newAppointment: IAppointment = {
-    id: appointmentIdCounter++,
-    date: appointmentDto.date,
-    time: appointmentDto.time,
-    userId: appointmentDto.userId,
-    status: "active",
-  };
-  appointmentData.push(newAppointment);
-  return newAppointment;
+  appointmentDto: AppointmentDto
+): Promise<Appointment> => {
+  const appointmentSaved =
+    AppDataSource.getRepository(Appointment).save(appointmentDto);
+  return appointmentSaved;
 };
 
-export const cancelAppointmentService = async (appointmentId: number): Promise<IAppointment> => {
-  const appointmentIndex = appointmentData.findIndex(
-    (appointment) => appointment.id === appointmentId
-  );
-  if (appointmentIndex == -1) {
+export const cancelAppointmentService = async (
+  appointmentId: number
+): Promise<Appointment> => {
+  const appointment = await AppDataSource.getRepository(Appointment).findOne({where:{id : appointmentId}});
+  if (!appointment) {
     throw new Error("No appointment found with provided ID");
-  }
-  else {
-      appointmentData[appointmentIndex].status = "cancelled";
-      return appointmentData[appointmentIndex]
+  } else {
+    appointment.status = "cancelled";
+    const  updatedAppointment = await AppDataSource.getRepository(Appointment).save(appointment);
+    return updatedAppointment;
   }
 };
