@@ -42,7 +42,7 @@ export const registerUser = async (req: Request, res: Response) => {
       password: req.body.password,
     };
     const newUser: User = await createUserService(userDto, credentialDto);
-    res.status(201).json(newUser);
+    res.status(201).json('User created successfully');
   } catch (error) {
     if (error instanceof Error) res.status(400).json(error.message);
   }

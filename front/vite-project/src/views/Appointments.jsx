@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import myAppointments from "../helpers/myAppointments";
 import { useState } from "react";
 import Appointment from "../components/Appointment";
 import { Container, Row } from "react-bootstrap";
+import axios from "axios";
 
 function Appointments() {
-  const [appointments, setAppointments] = useState(myAppointments);
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/appointments");
+        setAppointments(response.data);
+      } catch (error) {
+        console.log("Error al obetener los datos:", error);
+      }
+    };
+    fetchData();
+  }, []);
+  
   return (
     <Container>
       <h1 className="text-center mb-4">My Appointments</h1>

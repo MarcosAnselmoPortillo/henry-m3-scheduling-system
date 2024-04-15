@@ -54,7 +54,7 @@ export const createUserService = async (
       appointments: [],
     };
     const userSaved = await AppDataSource.getRepository(User).save(newUser);
-    return userSaved;
+    return (userSaved);
   }
 };
 
