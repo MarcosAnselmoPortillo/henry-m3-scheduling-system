@@ -4,6 +4,7 @@ import { useState } from "react";
 import Appointment from "../components/Appointment";
 import { Container, Row } from "react-bootstrap";
 import axios from "axios";
+import CreateAppointment from "../components/CreateAppointment";
 
 function Appointments() {
   const [appointments, setAppointments] = useState([]);
@@ -21,6 +22,8 @@ function Appointments() {
   }, []);
   
   return (
+    <>
+    <CreateAppointment />
     <Container>
       <h1 className="text-center mb-4">My Appointments</h1>
       {!appointments.length ? (
@@ -39,6 +42,7 @@ function Appointments() {
         </Row>
       )}
     </Container>
+    </>
   );
 }
 

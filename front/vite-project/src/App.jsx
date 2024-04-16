@@ -10,6 +10,7 @@ import Register from './views/Register'
 import PrivateRoute from './components/PrivateRoute'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Footer from './components/Footer'
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/register" element={<Register />} />
       </Routes>
+      <Footer />
     </div>
   )
 }

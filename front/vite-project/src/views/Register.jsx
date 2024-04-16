@@ -88,7 +88,7 @@ const Register = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
+    <div className="d-flex justify-content-center align-items-center mt-5">
       <Container>
         <h1 className="text-center mb-4">Sing Up</h1>
         <Row className="justify-content-center">
