@@ -12,16 +12,22 @@ const CancelAppointmentButton = ({ isCancelled , id}) => {
   const handleShowModal = () => setShowModal(true);
 
   const handleCancelAppointment = async () => {
-    // Aquí puedes agregar la lógica para cancelar el appointment
     try {
         const response = await axios.put(`http://localhost:3000/appointments/cancel/${id}`);
         //actualizar el estado
         dispatch(cancelUserAppointment(id));
-        console.log(response.data);
+        // console.log(response.data);
         console.log('Appointment cancelado');
+        alert('Appointment canceled successfully');
         handleCloseModal();
     } catch (error) {
-        logError(error);
+        if (error.response.data) {
+            alert(error.response.data.message);
+            console.log(error.response.data);
+        } else {
+            console.log(error);
+        }
+        
     }
   };
 
