@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from "react-redux";
 import { formatDate } from "../utils/formatDate";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { addUserAppointment } from "../redux-toolkit/userSlice";
 
 const CreateAppointment = () => {
@@ -29,6 +29,9 @@ const CreateAppointment = () => {
     const minute = parseInt(minutes, 10);
     return hour >= 10 && hour < 15;
   };
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,12 +58,15 @@ const CreateAppointment = () => {
 
     try {
       // console.log(formatDate(selectedDate), time, description, userId);
-      const response = await axios.post("http://localhost:3000/appointments/schedule", {
-        date: formatDate(selectedDate),
-        time,
-        description,
-        userId,
-      });
+      const response = await axios.post(
+        "http://localhost:3000/appointments/schedule",
+        {
+          date: formatDate(selectedDate),
+          time,
+          description,
+          userId,
+        }
+      );
       alert("Appointment scheduled successfully!");
       //agregar el appointment al state
       const newAppointment = {
@@ -85,13 +91,17 @@ const CreateAppointment = () => {
       <Row className="justify-content-center">
         <Col xs={12} md={6}>
           <h2 className="text-center mb-4">Create Appointment</h2>
+          <span className="text-center">
+            Please schedule your appointment. Remember that our business hours
+            are from 10 am to 3 pm.
+          </span>
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="date">
               <Form.Label>Date</Form.Label>
               <DatePicker
                 selected={date}
                 onChange={(date) => setDate(date)}
-                minDate={new Date()}
+                minDate={tomorrow}
                 filterDate={isWeekday}
                 dateFormat="yyyy-MM-dd"
                 placeholderText="Select a date"
