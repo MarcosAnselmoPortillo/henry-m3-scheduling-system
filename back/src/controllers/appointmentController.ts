@@ -41,7 +41,7 @@ export const scheduleAppointment = async (req: Request, res: Response) => {
       date: new Date(req.body.date),
       time: req.body.time,
       user: user,
-      status: "active"
+      description: req.body.description,
     };
     const createdAppointment: Appointment = await createAppointmentService(
       appointmentData

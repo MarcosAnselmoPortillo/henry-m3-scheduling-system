@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 
 @Entity({
@@ -13,8 +13,11 @@ export class Appointment {
 
   @Column()
   time: string;
-  
-  @Column("varchar")
+
+  @Column("varchar", { length: 100 })
+  description: string;
+
+  @Column({ type: "varchar", default: "active" })
   status: "active" | "cancelled";
 
   @ManyToOne(() => User, (user) => user.appointments)

@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Container, Row, Col, Form, Button, Alert, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { setUser } from '../redux-toolkit/userSlice';
+import { useDispatch} from "react-redux";
 
-const Login = ({ setIsAuthenticated }) => {
+const Login = () => {
+  const dispatch = useDispatch();
+  
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,8 +27,8 @@ const Login = ({ setIsAuthenticated }) => {
       console.log(response.data);
       if (response.data.login) {
         setUserData(response.data.user);
+        dispatch(setUser(response.data.user));
         setShowModal(true);
-        setIsAuthenticated(true); // Establecer isAuthenticated como true después de un inicio de sesión exitoso
       } else {
         setError("Nombre de usuario o contraseña inválidos");
       }

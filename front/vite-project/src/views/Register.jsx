@@ -55,10 +55,10 @@ const Register = () => {
       );
 
       // Manejar la respuesta exitosa
-      setSuccess("Registro exitoso");
+      setSuccess("Successful registration. Please Log in.");
       setError({});
       setUserData(initialUserData);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (err) {
       // Manejar el error
       if (err.response && err.response.data) {

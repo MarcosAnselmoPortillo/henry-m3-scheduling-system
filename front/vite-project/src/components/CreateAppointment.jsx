@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React, { useState } from "react";
+import axios from "axios";
+import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { useSelector } from "react-redux";
+import { formatDate } from "../utils/formatDate";
+import { useDispatch} from "react-redux";
+import { addUserAppointment } from "../redux-toolkit/userSlice";
 
 const CreateAppointment = () => {
+  const userId = useSelector((state) => state.user.user.id);
   const [date, setDate] = useState(null);
-  const [time, setTime] = useState('');
-  const [description, setDescription] = useState('');
-  const [error, setError] = useState('');
+  const [time, setTime] = useState("");
+  const [description, setDescription] = useState("");
+  const [error, setError] = useState("");
+  const dispatch = useDispatch();
 
+  // console.log(userId);
+  // console.log(user.user.id);
   const isWeekday = (date) => {
     const day = date.getDay();
-    return day !== 0 && day !== 6;
+    return day !== 0 && day !== 6; // 0 = Sunday, 6 = Saturday
   };
 
   const isValidTime = (time) => {
-    const [hours, minutes] = time.split(':');
+    const [hours, minutes] = time.split(":");
     const hour = parseInt(hours, 10);
     const minute = parseInt(minutes, 10);
     return hour >= 10 && hour < 15;
@@ -24,38 +32,51 @@ const CreateAppointment = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
-    const today = new Date();
+    const todayLocaleDateString = new Date().toLocaleDateString();
+    const today = new Date(todayLocaleDateString);
     const selectedDate = new Date(date);
 
     if (!date || selectedDate < today || !isWeekday(selectedDate)) {
-      setError('Please select a valid weekday date from today onwards.');
+      setError("Please select a valid weekday date from today onwards.");
       return;
     }
 
     if (!isValidTime(time)) {
-      setError('Appointment time must be between 10:00 and 14:59.');
+      setError("Appointment time must be between 10:00 and 14:59.");
       return;
     }
 
     if (!description) {
-      setError('Please provide a description for the appointment.');
+      setError("Please provide a description for the appointment.");
       return;
     }
 
     try {
-      await axios.post('http://localhost:3000/appointments/schedule', {
-        date: selectedDate,
+      // console.log(formatDate(selectedDate), time, description, userId);
+      const response = await axios.post("http://localhost:3000/appointments/schedule", {
+        date: formatDate(selectedDate),
         time,
         description,
+        userId,
       });
-      alert('Appointment scheduled successfully!');
+      alert("Appointment scheduled successfully!");
+      //agregar el appointment al state
+      const newAppointment = {
+        id: response.data.id,
+        date: response.data.date,
+        time: response.data.time,
+        description: response.data.description,
+        status: response.data.status,
+      };
+      dispatch(addUserAppointment(newAppointment));
       setDate(null);
-      setTime('');
-      setDescription('');
+      setTime("");
+      setDescription("");
     } catch (error) {
-      setError('An error occurred while scheduling the appointment.');
+      setError("An error occurred while scheduling the appointment.");
+      console.log(error);
     }
   };
 
