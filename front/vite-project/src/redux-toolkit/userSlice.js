@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { sortAppointments } from '../utils/sortAppointments';
 
 const initialState = {
   user: null,
@@ -15,17 +16,20 @@ const userSlice = createSlice({
       state.isAuthenticated = true; // Establecer isAuthenticated como true cuando se establece el usuario
     },
     setUserAppointments: (state, action) => {
-      state.userAppointments = action.payload;
+      const sortedAppointments = sortAppointments(action.payload);
+      state.userAppointments = sortedAppointments;
     },
     addUserAppointment: (state, action) => {
       state.userAppointments.push(action.payload);
+      const sortedAppointments = sortAppointments(state.userAppointments);
+      state.userAppointments = sortedAppointments;
     },
     cancelUserAppointment: (state, action) => {
       const appointmentId = action.payload;
       const updatedAppointments = state.userAppointments.map(appointment => 
         appointment.id === appointmentId ? { ...appointment, status: 'cancelled' } : appointment
       );
-      state.userAppointments = updatedAppointments;
+      state.userAppointments = sortAppointments(updatedAppointments);
     },
     logout: (state) => {
       state.user = null;
