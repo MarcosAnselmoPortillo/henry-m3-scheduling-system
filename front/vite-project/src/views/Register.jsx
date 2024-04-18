@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
 import axios from "axios";
 import { validate } from "../utils/validate";
@@ -82,10 +82,12 @@ const Register = () => {
     const { name, value } = e.target;
     const updatedUserData = { ...userData, [name]: value };
     setUserData(updatedUserData);
-
-    const validationErrors = validate(updatedUserData);
-    setError(validationErrors);
   };
+
+  useEffect(() => {
+    const validationErrors = validate(userData);
+    setError(validationErrors);
+  }, [userData]);
 
   return (
     <div className="d-flex justify-content-center align-items-center mt-5">
@@ -93,6 +95,12 @@ const Register = () => {
         <h1 className="text-center mb-4">Sing Up</h1>
         <Row className="justify-content-center">
           <Col md={6}>
+            {Object.keys(error).length === 0 && !success && (
+              <Alert variant="info">
+                Please complete all fields of the form.
+              </Alert>
+            )}
+
             {Object.keys(error).length > 0 && (
               <Alert variant="danger">
                 {error.general && <p>{error.general}</p>}
